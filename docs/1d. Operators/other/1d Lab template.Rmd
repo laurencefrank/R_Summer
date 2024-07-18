@@ -1,0 +1,146 @@
+---
+title: "Lab 1d"
+subtitle: "Operators"
+author: "Statistical Programming with R"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    number_sections: true
+    theme: journal
+    highlight: espresso
+---
+
+
+This practical is all about ...
+
+<center>
+
+![](planets.jpg){width=50%}
+
+</center>
+
+**Warning**: Before you can knit this file, download the image "planets.jpg" and place it in the same folder as your Rmd file.
+
+---
+
+
+Run the code below that makes 5 vectors containing information about planets. 
+
+```{r}
+planet     <- c("Mercury", "Venus", "Earth", "Mars", 
+                "Jupiter", "Saturn", "Uranus", "Neptune")
+
+type     <- c("Terrestrial planet", "Terrestrial planet", 
+              "Terrestrial planet", "Terrestrial planet", "Gas giant", 
+              "Gas giant", "Gas giant", "Gas giant")
+
+diameter <- c(0.382, 0.949, 1, 0.532, 11.209, 9.449, 4.007, 3.883)
+
+rotation <- c(58.64, -243.02, 1, 1.03, 0.41, 0.43, -0.72, 0.67)
+
+rings    <- c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE)
+```
+
+# Subsetting vectors
+
+a. Display the 2nd element of `rotation`.
+
+```{r}
+
+```
+
+d. Display the 1st and 2nd element of `planet`.
+
+```{r}
+
+```
+
+d. Display a logical vector with `TRUE` when `diameter > 1` and 
+`FALSE` otherwise. 
+
+```{r}
+
+```
+
+f. Display the planets with a diameter greater than 1.
+
+```{r}
+
+```
+
+
+
+# Subsetting data frames
+
+a. Make a data frame called `planets` containing
+
+    - the vector `names` as row names
+    - the other 4 vectors as variable with
+    - the vector type as factor
+
+```{r}
+
+```
+
+
+b. Remove the five vectors from workspace with the function `rm()`. 
+
+```{r}
+
+```
+
+b. Display the classes of the variables in `planets` with the function `sapply()`.
+
+```{r}
+
+```
+
+c. Display the summary of `planets`. 
+
+```{r}
+
+```
+
+d. Display the variable `type` of `planets` using square brackets. 
+
+```{r}
+
+```
+
+d. Display the variable `diameter` of `planets` using the dollar sign. 
+
+```{r}
+
+```
+
+
+# Lists
+
+a. Make a list `planets_list` containing the data frame `planets`, the levels of `type`,  and the mean of `diameter`. Give each list element an appropriate name
+
+```{r}
+
+```
+
+b. Display the third element of the list using double square brackets.
+
+```{r}
+
+```
+
+c. Display the second element of the list using the dollar sign.
+
+```{r}
+
+```
+
+# Advanced
+
+a. Display from the first list element (the data frame `planets`) the second and fourth element of the variable `rotation`.
+
+```{r}
+
+```
+

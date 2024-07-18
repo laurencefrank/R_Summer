@@ -1,0 +1,210 @@
+---
+title: "Lab 4b"
+subtitle: "Resampling"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+
+---
+
+```{r global_opts, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, 
+                      warning = FALSE,
+                      comment = "",
+                      fig.width = 16/2,
+                      fig.height = 9/2)
+
+```
+
+------------------------------------------------------------------------
+
+# Bootstrap
+
+In this exercise we you will work with the bootstrap function presented in the lecture slides.
+
+## Load the necessary packages
+
+Load the packages: `tidyverse`, `ggplot2` and `patchwork`. The package `pacman` helps to manage loading your packages, see the code below:
+
+```{r Load_packages, echo=FALSE}
+# Ensures the package "pacman" is installed
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load(tidyverse,
+               ggplot2,
+               patchwork)
+```
+
+
+##  Create an R script for the bootstrap function using the following steps:
+
+* Open an R script in RStudio with: File -> New File -> R Script
+* Copy-paste the bootstrap function from the lecture in the R script file and save it as `my_bootstrap`, 
+* Source the `my_bootstrap` file by running the the in the R chunk below. Check if the function appeared in your workspace.
+
+```{r}
+source("my_bootstrap.R")
+```
+
+## Load the data
+
+Load the mammals sleep data with the `load()` function. The data are in the folder "Lecture and Lab 4b" and are in the R data format (extension .Rdata). Check whether you see the data in the workspace.
+
+```{r}
+load("MammalsSleepData.RData")
+```
+
+## Inspect the data
+
+Have a quick inspection of the data with `glimpse()` or `str()` and look at the descriptive statistics with `summary()`
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+## Create a subset of the data
+
+Create a subset of the data with only the variables: `total_sleep`, `brain_wt`, `body_wt` and `danger`, and remove the missing values (hint: use the pipe operator).
+
+```{r}
+
+```
+
+## Create a new variable
+
+Create the variable `brain_weight` which is the ratio of brain weight and body weight. Compute the new variable as follows: `brain_weight = brain_wt / body_wt` and save the new variable to the subset_mammals data.
+
+```{r}
+
+```
+
+
+## Fit a linear model 
+
+Fit the linear model `total_sleep ~ brain_weight + danger` of the `subset_mammals` data and save the `lm` object as `fit_mammals`.
+
+```{r}
+
+```
+
+Display the summary of this linear model and save it. What do you conclude about the results?
+
+```{r}
+
+```
+Obtain the 95% confidence intervals for the regression coefficients of the linear model and save the results.
+
+```{r}
+
+```
+
+
+##  Run the bootstrap 
+
+Run the bootstrap function on the same linear regression model as in the previous question. Save the results as `boot_mammals`. Do not forget to set a random number seed.
+
+```{r}
+
+```
+
+
+## Visualize the bootstrap distributions
+
+Make a histogram of the bootstrap distributions for the predictors `brain_body` and `danger` using the package `ggplot2`. 
+
+The package `ggplot2` works best with data frames. The output of the bootstrap function, `boot_mammals` is a list. Convert the list into a data frame first. 
+
+```{r}
+
+
+```
+
+Make a histogram of the bootstrap distribution for the regression coefficient of `brain_body` and for `danger` with `ggplot2`. 
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+## Compare the confidence intervals
+
+First write code to obtain the bootstrap percentile 95% confidence intervals (see code in the lecture slide) and save the results:
+
+```{r}
+
+```
+
+Display the results of the theoretical 95% confidence interval you obtained earlier. 
+```{r}
+
+```
+
+Then compare the bootstrap 95% CI and the theoretical 95% CI. What do the results tell you bout the tenability of the model assumptions? 
+
+```{r}
+
+```
+
+# Advanced
+
+## Make more advanced plots
+
+### Plot the confidence intervals in the bootstrap distribution
+
+In a previous exercise you created histograms of the bootstrap distribution of the regression coefficients for `brain_body` and `danger`. Use the same histograms and add to the plots as vertical lines: 
+
+* the limits for the theoretical and bootstrap 95% confidence intervals. 
+* the mean of the bootstrapped regression coefficients.
+* the values of the regression coefficients of the fitted model.
+
+With the option `geom_vline()` you can add vertical lines to your plot. 
+
+The package `patchwork` allows you to display two plots in one figure by simply adding a `+` sign between the two plots. 
+
+```{r}
+
+```
+
+## Plot the theoretical and bootstrap distributions
+
+In a 1 x 2 plot array, plot the bootstrap sampling distributions of the regression coefficients two variables `brain_body` and `danger` in red, and the theoretical sampling distribution of the regression coefficients in blue. For the latter, use `stat_function(fun = dnorm, args = list(mean = ..., sd = ...))`, with the arguments `mean` and `sd` derived from the corresponding parameter estimates of the `lm` model. Use the `fit_mammals` and the `sum_fit_mammals` objects to obtain the statistics you need for the plots. 
+
+```{r}
+
+
+```
+
+
+## Add more functionality to the bootstrap function
+
+Modify the `bootstrap()` function in such a way that instead of the bootstrapped parameters it returns
+
+    -   the bootstrap confidence intervals of the parameters and of the R-squared
+    -   a plot of the R-squared sampling distribution
+
+```{r}
+
+```
+
+Apply the `bootstrap` function to a model and data set of your own choice.
+
+```{r}
+
+
+```
+
+
+

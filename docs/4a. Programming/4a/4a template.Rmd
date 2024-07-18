@@ -1,0 +1,125 @@
+---
+title: "Lab 4a"
+subtitle: "Functional Programming"
+author: 'Utrecht Summer School: Statistical Programming with R'
+output: 
+  prettydoc::html_pretty:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+---
+
+```{r message=FALSE}
+library(dplyr)
+```
+
+------------------------------------------------------------------------
+
+# Function returming the cumulative sum of a vector
+
+In this exercise you'll write your own cumulative sum function. This function returns the cumulative sums of the elements of a vector, and will work identically to the base R function `cumsum()`, e.g.
+
+```{r}
+cumsum(x = 1:4)
+```
+
+We'll take the following steps:
+
+1.  Write the loop
+2,  Make container object 
+3.  Collect the results in a container object
+4.  Embed 1 to 3 in the function `my_cumsum(x)`
+
+But first make the vector `x` with the values `1:4`.
+
+```{r}
+
+```
+
+a.  Now write a loop that computes the cumulative sums of `x`. This requires the following steps:
+
+    1.  Define a `counter`, e.g. `i`
+    2.  Define a `sequence` of integers that runs from 1 to the length of the vector `1:4`
+    3.  The consecutive iterations should return the sum of `x[1:i]`
+    4.  Use the `print()` command to print the outcome at each iteration
+
+```{r}
+
+```
+
+b.  Now make a container object. The most obvious would be to make it a numeric vector with length is `length(x)`. Check the help page of the function `numeric()` on how to do that.
+
+```{r}
+
+```
+
+c.  Now rewrite the loop so that it stores the cumulative sums in the container vector. Run the loop and check the content of the container vector.
+
+```{r}
+
+```
+
+d.  Now include the container object and the loop in your function `my_cumsum(x)`, where `x` is the function argument denoting the vector for which the cumulative sums have to be returned. Run the function, and check wheter it appears in your workspace.
+
+```{r}
+
+```
+
+b.  Apply your function to the vector `-4:4`, and compare its result to that of the base R function.
+
+```{r}
+
+```
+
+# Advanced
+
+Suppose we want to know the slopes, SEs, t-values and p-values of variables in `mtcars` as predictors of `mpg`. To avoid writing a lot of code we will do this using a loop.
+
+To get the relevant information we have to 
+
+1. Fit the model
+2. Get the summary of the model
+3. Extract the coefficients from the summary object (1st row is intercept, 2nd slope)
+4. Remove the information about the intercept by filtering the 2nd row (slope)
+5. Round the info to tree decimals to make it make it better readable
+
+
+The base R code is
+
+```{r}
+round(coef(summary(lm(mpg ~ disp, mtcars)))[2, ], 3)
+```
+
+The code to do this with `dplyr` functions for the variable `disp` is shown below. Run this code step-by-step to see what it does.
+
+```{r}
+lm(mpg ~ disp, mtcars) %>%  # fit the model
+  summary() %>%             # get the summary   
+  coef() %>%                # extract the matrix with the coefficients info
+  as.data.frame() %>%       # slice needs a data frame 
+  slice(2) %>%              # keep the 2nd row with the slope
+  unlist() %>%              # convert data frame back to a vector
+  round(3)                  # round
+```
+
+a. The `mtcars` data has 11 variables, so 10 predictors of `mpg`. Make container matrix with 10 rows and 4 columns to store the information. Give the rows the names of the predictors, and the column names of the vector above. 
+
+```{r}
+
+```
+
+b. Fill the rows of this matrix with the slopes, SEs, and t- and p-values for the corresponding predictors of `mpg` using a loop. The steps are:
+
+     1. Define `sequence` by the column positions of the predictors in `mtcars`
+     2. Fit the model `mpg ~ .` to a selection of the data (`mpg` + predictor)
+     3. Run the code above to fill the container matrix.
+
+```{r}
+
+```
+
+
+
+------------------------------------------------------------------------
+
+End of practical

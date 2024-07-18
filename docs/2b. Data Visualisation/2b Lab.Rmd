@@ -1,0 +1,223 @@
+---
+title: "Lab 2b"
+subtitle: "Data Visualization"
+author: "Statistical programming with R"
+params:
+  answers: false
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    df_print: paged
+    number_sections: false
+    theme: paper
+    highlight: tango
+    code_folding: hide 
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(eval = params$answers)
+```
+
+------------------------------------------------------------------------
+
+For this practical, you will need to load the packages `ggplot2`,
+`dplyr`, and `patchwork`. If displaying multiple plot in one figure, use
+the R chunk options `fig.width` (default = 7), `fig.height` (default =
+5) and/or `fig.asp` (height:width ratio) to display the plots in a nice
+format. To avoid messages by `ggplot()` being printed to the html, set
+the global chunk option to `message = FALSE`
+
+```{r message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+For a quick reference of `ggplot2` functions, consult
+
+-   [ggplot2
+    Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf)
+
+-   [ggplot2
+    Reference](https://ggplot2.tidyverse.org/reference/index.html)
+
+------------------------------------------------------------------------
+
+# The diamonds data
+
+The dataset for this practical is the `diamonds` dataset from the
+package `ggplot2`.
+
+a.  Check the help page of this `tibble` for its content, and display
+    the first 10 rows of the data in your HTML.
+
+```{r}
+diamonds
+```
+
+The `diamonds` data set has more than 50.000 rows, which is a lot. To
+simplify matters, we will work with a random sample of 500 cases.
+
+b.  Set the seed to 100, and randomly sample 500 cases from the dataset
+    `diamonds` using the `slice_sample()` function. Save the resulting
+    data set as `my_diamonds`.
+
+```{r}
+set.seed(100)
+my_diamonds <- slice_sample(diamonds, n = 500)
+```
+
+# One variable
+
+In the following exercises we display plots numeric and of
+categorical/discrete variables. Check the `geoms` overview in the
+lecture sheets for the different options.
+
+a.  In a 1 x 3 plot array, plot the distribution of variable `carat`
+    using the three different geoms. Add a title with the name of the
+    appropriate geom to each plot. The chunk option `fig.asp = .35`
+    displays the plots in a nice format.
+
+```{r fig.asp = 0.35}
+p <- ggplot(my_diamonds, aes(x = carat))
+
+p + geom_histogram(bins = ) + 
+    ggtitle("histogram") +
+
+p + geom_density() + 
+    ggtitle("density plot") +
+  
+p + geom_boxplot() + 
+    ggtitle("box plot") 
+
+```
+
+Discrete variables are variables with countable values (i.e. categorical
+variables or variables with a small number of integer values). The most
+common option for such variables is the bar plot
+
+a.  Display the bar plots of the factors `cut`, `color` and `clarity` in
+    a 1 x 3 plot array. Make sure that the labels of the categories are
+    readable (i.e., not overlapping).
+
+```{r fig.asp = 0.35}
+  ggplot(my_diamonds, aes(y = cut)) + 
+    geom_bar() +
+  
+  ggplot(my_diamonds, aes(y = color)) + 
+    geom_bar() +
+  
+  ggplot(my_diamonds, aes(y = clarity)) + 
+    geom_bar() 
+```
+
+# Two variables
+
+The combinations between numeric and categorical/discrete variables
+requires different geoms. Check the cheat sheet again for the appropriate
+options.
+
+a.  In the first row of one figure, display a box and violin plot of the
+    variables `price` and `cut`, an in the second row a density plot.
+    Use the `/` symbol to start a new row.
+
+```{r}
+(ggplot(my_diamonds, aes(price, cut)) + 
+    geom_boxplot() +
+  
+ggplot(my_diamonds, aes(price, cut)) + 
+    geom_violin() ) /
+  
+ggplot(my_diamonds, aes(price, fill = cut)) + 
+    geom_density(alpha = .3)  
+```
+
+The variables `color` and `clarity` are both categorical variables, and
+their distribution is generally displayed by bar plots.
+
+b.  Display a stacked, a dodged, and a filled bar plot of these
+    variables in a 1 x 3 plot array. Use the `plot_layout()` function to
+    display the legend and axes labels only once.
+
+```{r fig.asp = .35}
+ggplot(my_diamonds, aes(color, fill = clarity)) + 
+    geom_bar() +
+  
+ggplot(my_diamonds, aes(color, fill = clarity)) + 
+    geom_bar(position = "dodge") +
+  
+ggplot(my_diamonds, aes(color, fill = clarity)) + 
+    geom_bar(position = "fill") +
+  
+  plot_layout(guides = "collect", axes = "collect")
+```
+
+c.  Now display the joint distribution of these two variables with
+    `geom_count()`.
+
+```{r}
+ggplot(my_diamonds, aes(color, clarity)) + 
+    geom_count()
+```
+
+
+# Three variables
+
+The most common plot is that with two numeric variables and one categorical variable, with the levels of the categorical variable displayed with different shapes or colors.
+
+a.  Display two scatter plots of `price` and `carat` in a 1 x 2 plot
+    array, once with different sizes for `price`, and once with
+    different shapes for `cut`. Make the points transparent by setting
+    `alpha` to an appropriate value.
+
+```{r fig.asp = 0.4}
+ggplot(my_diamonds, aes(price, carat, size = price)) +
+  geom_point(alpha = .1) +
+
+ggplot(my_diamonds, aes(price, carat, col = cut)) +
+  geom_point(alpha = .5) 
+
+
+```
+
+b. The plot with different colors for `cut` is not very clear.
+Reproduce the plot by adding a `facet_wrap()` layer, and add `price` for
+the size of the points.
+
+```{r}
+ggplot(my_diamonds, aes(price, carat, col = cut)) +
+  geom_point(aes(size = price), alpha = .5) +
+  facet_wrap(vars(cut))
+```
+
+d. Display the previous plot with a different theme (choose one that you think looks nice).
+
+```{r}
+ggplot(my_diamonds, aes(price, carat, col = cut)) +
+  geom_point(aes(size = price), alpha = .5) +
+  facet_wrap(vars(cut)) +
+  theme_classic()
+```
+
+
+# Advanced
+
+a. Display a graphical representation of the variables `price`, `carat`, `depth`, `cut` and `color`. 
+
+```{r}
+ggplot(my_diamonds, aes(price, carat, col = depth)) +
+  geom_point(aes(size = color), alpha = .5) +
+  facet_wrap(vars(cut)) +
+  theme_minimal()
+```
+
+
+------------------------------------------------------------------------
+
+End of lab

@@ -1,0 +1,291 @@
+---
+title: "Lab 4b"
+subtitle: "Statistical inference, bootstrap"
+author: "Utrecht Summer School: Statistical Programming with R"
+params: 
+   answers: true
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    df_print: paged
+    number_sections: true
+    theme: paper
+    highlight: tango
+    code_folding: hide 
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r global_opts, include=FALSE}
+knitr::opts_chunk$set(eval = params$answers,
+                      message = FALSE, 
+                      warning = FALSE,
+                      comment = "",
+                      fig.width = 16/2,
+                      fig.height = 9/2)
+
+```
+
+------------------------------------------------------------------------
+
+# Bootstrap
+
+In this exercise we you will work with the bootstrap function presented in the lecture slides.
+
+## Load the necessary packages
+
+Load the packages: `tidyverse`, `ggplot2` and `patchwork`. The package `pacman` helps to manage loading your packages. 
+
+
+```{r Load_packages, echo=FALSE}
+# Ensures the package "pacman" is installed
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load(tidyverse,
+               ggplot2,
+               patchwork)
+```
+
+
+##  Create an R script for the bootstrap function using the following steps:
+
+* Open an R script in RStudio with: File -> New File -> R Script
+* Copy-paste the bootstrap function from the lecture in the R script file and save it as `my_bootstrap`, 
+* Source the `my_bootstrap` file by running the the in the R chunk below. Check if the function appeared in your workspace.
+
+```{r}
+source("my_bootstrap.R")
+```
+
+## Load the data
+
+Load the mammals sleep data with the `load()` function. The data are in the folder "Lecture and Lab 4b" and are in the R data format (extension .Rdata). Check whether you see the data in the workspace.
+
+```{r}
+load("MammalsSleepData.RData")
+```
+
+## Inspect the data
+
+Have a quick inspection of the data with `glimpse()` or `str()` and look at the descriptive statistics with `summary()`
+
+```{r}
+glimpse(mammals)
+# str(mammals)
+```
+
+```{r}
+summary(mammals)
+```
+
+
+## Create a subset of the data
+
+Create a subset of the data with only the variables: `total_sleep`, `brain_wt`, `body_wt` and `danger`, and remove the missing values (hint: use the pipe operator).
+
+```{r}
+subset_mammals <- mammals %>% 
+  select(total_sleep, brain_wt, body_wt, danger) %>%
+  na.omit()
+```
+
+## Create a new variable
+
+Create the variable `brain_weight` which is the ratio of brain weight and body weight. Compute the new variable as follows: `brain_weight = brain_wt / body_wt` and save the new variable to the subset_mammals data.
+
+```{r}
+subset_mammals <- subset_mammals %>% 
+  dplyr::mutate(brain_body = brain_wt / body_wt)
+```
+
+
+## Fit a linear model 
+
+Fit the linear model `total_sleep ~ brain_weight + danger` of the `subset_mammals` data and save the `lm` object as `fit_mammals`.
+
+```{r}
+fit_mammals <- lm(total_sleep ~ brain_body + danger, data = subset_mammals)
+```
+
+Display the summary of this linear model and save it. What do you conclude about the results?
+
+```{r}
+sum_fit_mammals <- summary(fit_mammals)
+sum_fit_mammals
+```
+Obtain the 95% confidence intervals for the regression coefficients of the linear model and save the results.
+
+```{r}
+CI95 <- confint(fit_mammals) 
+CI95
+```
+
+
+##  Run the bootstrap 
+
+Run the bootstrap function on the same linear regression model as in the previous question. Save the results as `boot_mammals`. Do not forget to set a random number seed.
+
+```{r}
+set.seed(848)
+boot_mammals <- bootstrap(total_sleep ~ brain_body + danger, data = subset_mammals) 
+```
+
+
+## Visualize the bootstrap distributions
+
+Make a histogram of the bootstrap distributions for the predictors `brain_body` and `danger` using the package `ggplot2`. 
+
+The package `ggplot2` works best with data frames. The output of the bootstrap function, `boot_mammals` is a list. Convert the list into a data frame first. 
+
+```{r}
+# Make dataframe from the list of bootstrap coefficients
+df_boot_mammals <- data.frame(boot_mammals)
+```
+
+Make a histogram of the bootstrap distribution for the regression coefficient of `brain_body` and for `danger` with `ggplot2`. 
+```{r}
+
+df_boot_mammals %>%
+  ggplot(aes(brain_body)) + 
+  geom_histogram(bins = 50, fill = "lightblue", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Bootstrap distribution regression coefficient brain_body")
+
+```
+
+
+```{r}
+df_boot_mammals %>%
+  ggplot(aes(danger)) + 
+  geom_histogram(bins = 50, fill = "lightblue", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Bootstrap distribution regression coefficient for danger")
+```
+
+
+## Compare the confidence intervals
+
+First write code to obtain the bootstrap percentile 95% confidence intervals (see code in the lecture slide) and save the results:
+
+```{r}
+CI95_boot <- apply(boot_mammals, 2, function(x) quantile(x, probs = c(.025, .975))) %>% t()
+CI95_boot %>% round(3)
+```
+
+Display the results of the theoretical 95% confidence interval you obtained earlier. 
+```{r}
+CI95 %>% round(3)
+```
+
+Then compare the bootstrap 95% CI and the theoretical 95% CI. What do the results tell you bout the tenability of the model assumptions? 
+
+```{r}
+(CI95_boot  - CI95) %>% round(3)
+```
+
+# Advanced
+
+## Make more advanced plots
+
+### Plot the confidence intervals in the bootstrap distribution
+
+In a previous exercise you created histograms of the bootstrap distribution of the regression coefficients for `brain_body` and `danger`. Use the same histograms and add to the plots as vertical lines: 
+
+* the limits for the theoretical and bootstrap 95% confidence intervals. 
+* the mean of the bootstrapped regression coefficients.
+* the values of the regression coefficients of the fitted model.
+
+With the option `geom_vline()` you can add vertical lines to your plot. 
+
+The package `patchwork` allows you to display two plots in one figure by simply adding a `+` sign between the two plots. 
+
+```{r}
+library(patchwork)
+df_boot_mammals %>%
+  ggplot(aes(brain_body)) + 
+  geom_histogram(bins = 60, fill = "lightblue", color = "black") +
+  geom_vline(xintercept = fit_mammals$coefficients[[2]], col = "darkblue", linewidth = 1) +
+  geom_vline(xintercept = mean(df_boot_mammals$brain_body), col = "orange", linewidth = 1) +
+  geom_vline(xintercept = CI95_boot[2,1], col = "orange", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = CI95_boot[2,2], col = "orange", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = CI95[2,1], col = "darkblue", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = CI95[2,2], col = "darkblue", linewidth = 1, linetype = "dashed") +
+  theme_minimal() +
+  labs(
+    title = "Distribution bootstrapped regression coefficients brain weight and danger",
+    subtitle = "Orange= bootstrap mean and 95%CI , dark blue = theoretical estimate and 95%CI") +
+  
+df_boot_mammals %>%
+  ggplot(aes(danger)) + 
+  geom_histogram(bins = 60, fill = "lightblue", color = "black") +
+  geom_vline(xintercept = fit_mammals$coefficients[[3]], col = "darkblue", linewidth = 2) +
+  geom_vline(xintercept = mean(df_boot_mammals$danger), col = "orange", linewidth = 1) +
+  geom_vline(xintercept = CI95_boot[3,1], col = "orange", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = CI95_boot[3,2], col = "orange", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = CI95[3,1], col = "darkblue", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = CI95[3,2], col = "darkblue", linewidth = 1, linetype = "dashed") +
+  theme_minimal()
+```
+
+## Plot the theoretical and bootstrap distributions
+
+In a 1 x 2 plot array, plot the bootstrap sampling distributions of the regression coefficients two variables `brain_body` and `danger` in red, and the theoretical sampling distribution of the regression coefficients in blue. For the latter, use `stat_function(fun = dnorm, args = list(mean = ..., sd = ...))`, with the arguments `mean` and `sd` derived from the corresponding parameter estimates of the `lm` model. Use the `fit_mammals` and the `sum_fit_mammals` objects to obtain the statistics you need for the plots. 
+
+```{r}
+
+ggplot(df_boot_mammals, aes(x = brain_body)) +
+  geom_density(col = "red") +
+  stat_function(fun = dnorm, args = list(mean = fit_mammals$coef[2], 
+                                         sd = sum_fit_mammals$coefficients[2, 2]),
+                col = "blue") +
+ 
+ggplot(df_boot_mammals, aes(x = danger)) +
+  geom_density(col = "red") +
+  stat_function(fun = dnorm, args = list(mean = fit_mammals$coef[3], 
+                                         sd = sum_fit_mammals$coefficients[3, 2]),
+                col = "blue") 
+
+```
+
+
+## Add more functionality to the bootstrap function
+
+Modify the `bootstrap()` function in such a way that instead of the bootstrapped parameters it returns
+
+    -   the bootstrap confidence intervals of the parameters and of the R-squared
+    -   a plot of the R-squared sampling distribution
+
+```{r}
+bootstrap <- function(formula, data, B = 1000) {  
+  
+  pars    <- colnames(model.matrix(formula, data = data))
+  
+  output  <- matrix(nrow = B, ncol = length(pars) + 1,           
+                    dimnames = list(NULL, c(pars, "Rsquared")))                 
+  
+  for (i in 1:B) {
+    bootsample  <- slice_sample(.data = data, n = nrow(data), replace = TRUE)
+    bootfit     <- lm(formula = formula, data = bootsample)
+    output[i, ] <- c(bootfit$coef, summary(bootfit)$r.squared)
+  }
+  
+  return(list(confint = apply(output, 2, function(x) quantile(x, probs = c(.025, .975))),
+              gg_rsq  = ggplot(as.data.frame(output), aes(Rsquared)) + geom_density()))
+}
+```
+
+Apply the `bootstrap` function to a model and data set of your own choice.
+
+```{r}
+bootstrap(price ~ carat + cut, 
+          mutate(diamonds, cut = factor(cut, ordered = F)) %>% 
+            slice_sample(n = 2500))
+```
+
+
+

@@ -1,0 +1,101 @@
+---
+title: "Lab 3a"
+subtitle: "Linear model"
+author: ""
+output: 
+  prettydoc::html_pretty:
+    toc: true
+    toc_depth: 2
+---
+
+
+For this lab you need to load the packages `dplyr`, `ggplot2` and
+`patchwork`.
+
+
+# Data prepapartion
+
+In this practical, we predict the `price` of diamonds of the `diamonds`
+data from the `ggplot2` package. The data has 10 variables and 53940
+observations. For that many cases it takes a long time to make a plot.
+Therefore we reduce the size of the data a little bit.
+
+a.  Set the seed to 100 and draw a random sample of 500 cases with
+    `slice_sample()` function. Save this sample as `my_diamonds`
+
+
+b.  Because we want to work with dummy variable, we have to convert the
+    variables of class `ordered` into variables of class `factor`. Do so
+    and save the result.
+
+# Simple regression
+
+We start with a numeric predictor.
+
+a.  Display a scatter plot with a linear regression line for the model
+    `price ~ carat`.
+
+
+b.  Display and interpret the summary of the model and interpret the
+    effect of `carat` on `price`.
+
+
+Now we use a categorical predictor.
+
+c.  Plot the distribution of `price` as a function of the categorical
+    variable `cut`.
+
+b.  Display and interpret the summary of the model with `cut` predicting
+    `price`.
+
+```{r}
+lm(price ~ cut, my_diamonds) %>% summary()
+```
+
+# Multiple regression
+
+a.  Display a scatter plot with a linear regression lines for the model
+    `price ~ carat + cut`. Does the plot show evidence for interaction?
+
+b.  Display the summary of the interaction model `price ~ carat * cut`,
+    and interpret the parameter estimates.
+
+c.  Perform an ANOVA test for the model main effects model and the
+    interaction model. Which model fits the data best?
+
+We now add the numeric variable `depth` and the categorical variable
+`color` as predictors of `price`.
+
+d.  Perform an ANOVA test for by adding the variables `carat`, `cut`,
+    `dpth` and `color` subsequently to the model. What do you conclude?
+
+
+The `step()` function is specifically designed to find the best model
+given a set of predictors.
+
+e.  Apply the `step()` function to the main effects model with all four
+    predictors.
+
+
+f.  Perform a backward step-wise analysis with all main with the predictors `carat`, `color`, `cut`, and `depth`.
+
+
+g.  Display and interpret the summary this model.
+
+```{r}
+summary(lm(price ~ carat + cut + color, my_diamonds))
+```
+
+# Advanced
+
+In the previous exercises we did not investigate potential interactions between the predictors.
+
+a.  Use the `step()` function to find the best model when allowing for all pairwise interactions between the predictors. 
+
+
+b. There is one interaction term in the model. To interpret this interaction, display it a plot.
+
+
+---
+
+End of lab

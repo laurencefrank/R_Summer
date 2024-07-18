@@ -1,0 +1,38 @@
+---
+title: "Lab1"
+author: "Your name"
+date: "2024-05-28"
+output: html_document
+---
+
+# This is a level 1 header
+
+Here you can type your text.
+
+## This is a level 2 header
+
+Using different number of hash tags, `#` or `##` will change the size of the headers and sub-headers.
+
+This is **some text in bold typeface**
+
+This is *some italic text*
+
+Below is a code chunk:
+
+```{r}
+x <- 8
+x
+
+```
+
+## Work with inline code
+
+```{r}
+name <- "Karin" 
+age <- 26
+country <- "The Netherlands"
+today <- Sys.Date()
+birthday <- as.Date("2024-10-11")
+```
+
+My name is `r name` and I live in `r country`. I am `r age` years old and it is `r birthday - today` days until my birthday.

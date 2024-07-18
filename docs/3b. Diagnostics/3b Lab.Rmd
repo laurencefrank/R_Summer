@@ -1,0 +1,251 @@
+---
+title: "Diagnostics"
+subtitle: "Statistical programming with R"
+author: "Summer School Utrecht"
+params:
+  answers: true
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    theme: paper
+    code_folding: hide
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(eval = params$answers)
+```
+
+------------------------------------------------------------------------
+
+For this practical you need the packages `dplyr`, `ggplot2`, `patchwork` and, for the bonus exercise, the package `splines`.
+
+```{r message = F}
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(splines)
+knitr::opts_chunk$set(message = FALSE, warning=F)
+```
+
+The data in this practical violate the assumptions of the linear model in various ways. It is your job to transform the data and/or extend the models in such a way that the assumptions are fulfilled.
+
+------------------------------------------------------------------------
+
+# Animals
+
+In this exercise you will work with the `Animals` data from the package `MASS`. 
+The data set includes the variables with measurements of the brain and body weight of various animals. 
+
+a. Load the data in workspace with the function `data()`.
+
+```{r}
+data(Animals, package = "MASS")
+```
+
+b.  Display the row names to get an idea of what kinds of animals are in the data.
+
+```{r}
+rownames(Animals)
+```
+
+## Linear model
+
+We want to predict brain weight from body weight. We start with visualizing the data.
+
+a.  Display the boxplots showing the distributions of `brain` and `body` in a 1 x 2 array.
+
+```{r fig.asp = 0.4}
+ggplot(Animals) +
+  geom_boxplot(aes(y = brain)) +
+ggplot(Animals) +
+  geom_boxplot(aes(y = body))
+```
+
+b.  Display a scatter plot for the model  `brain ~ body` with a linear regression line. Interpret the plot.
+
+```{r fig.width = 5, fig.height = 3}
+ggplot(Animals, aes(x = body, y = brain)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  theme_minimal()
+```
+
+c.  Fit the linear model, display its summary, and interpret the parameter estimates and the R-squared.
+
+```{r}
+m0 <- lm(brain ~ body, Animals)
+summary(m0)
+```
+
+d.  Display the diagnostic residual plots for the previous model, and interpret the results.
+
+```{r fig.asp = 1.2}
+par(mfcol = c(2, 2))
+plot(m0)
+```
+
+## Data transformations
+
+Since the variables `brain` and `body` are substantially skewed, a data transformation may improve the fit of the model.
+
+a.  Apply transformations to normalize the distributions of the variables `body` and `brain`, and check the result with boxplots.
+
+```{r fig.asp = 0.4}
+ggplot(Animals) +
+  geom_boxplot(aes(y = log(brain))) +
+ggplot(Animals) +
+  geom_boxplot(aes(y = log(body)))
+```
+
+b.  Display a scatter plot of the transformed versions of `brain` and `body`, and add a linear regression line.
+
+```{r fig.width = 5, fig.height = 3}
+ggplot(Animals, aes(x = log(body), y = log(brain))) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  theme_minimal()
+```
+
+c.  Fit the linear model `m1` with the transformed `body` predicting the transformed `brain`, display its summary, and interpret the parameter estimates and the R-squared.
+
+```{r}
+m1 <- lm(log(brain) ~ log(body), Animals)
+summary(m1)
+```
+
+d.  Display the diagnostic plots for `m1` and interpret. Are the model assumptions fulfilled?
+
+```{r fig.asp = 1.2}
+par(mfcol = c(2, 2))
+plot(lm(log(brain) ~ log(body), Animals))
+```
+
+## Adding a predictor
+
+Additional predictors can help to satisfy the assumptions. For the data at hand, the residuals plots show three outliers that have one thing at common; they are prehistoric species. Let's see what happens if we add a predictor to the model that distinguishes between extinct and other species.
+
+a.  Make the factor `species` with levels "extinct" for the prehistoric animals and "other" for the others, and add this factor to the data frame `Animals`.
+
+```{r}
+Animals <- mutate(Animals, 
+                  species = case_when(
+                    rownames(Animals) %in% c("Brachiosaurus",
+                                             "Triceratops",
+                                             "Dipliodocus") ~ "extinct",
+                    .default = "other")
+                  )
+```
+
+b.  Fit the model `m2` by adding the predictor `species` to model `m1`, display its summary, and interpret the parameter estimates and the R-squared.
+
+```{r}
+m2 <- lm(log(brain) ~ log(body) + species, Animals)
+summary(m2)
+```
+
+c.  Display and interpret the diagnostic plots for `m2`.
+
+```{r fig.asp = 1.2}
+par(mfcol = c(2, 2))
+plot(m2)
+```
+
+The diagnostic plots show outliers that have a higher (logarithm of) `brain` than predicted by the model. These outliers belong to the class of species know as primates. This result suggests that the predictor `species` could be extended with the category `primates`.
+
+d.  Add the level "primate" to the variable `species` (check which of the animals are primates).
+
+```{r}
+Animals <- mutate(Animals, 
+                  species = case_when(
+                    rownames(Animals) %in% c('Human', 
+                                             'Chimpanzee', 
+                                             'Gorilla',
+                                             'Rhesus monkey', 
+                                             'Potar monkey') ~ "primate", 
+                                      .default = species)
+                  )
+```
+
+e.  Fit the model `m3` with the modified predictor `species`; display its summary, and interpret the parameter estimates and the R-squared.
+
+```{r}
+m3 <- lm(log(brain) ~ log(body) + species, Animals)
+summary(m3)
+```
+
+f.  Display and interpret the diagnostic plots for `m3`. What do the residual plots say about the brain weight of the Gorilla?
+
+```{r fig.asp = 1.2}
+par(mfcol = c(2, 2))
+plot(m3)
+```
+
+g.  Test the fit of the models `m1` to `m3` with the `anova()` function.
+
+```{r}
+anova(m1, m2, m3)
+```
+
+h.  Finally, check for multicollinearity in `m3`.
+
+```{r}
+DAAG::vif(m3)
+```
+
+# Advanced
+
+In this exercise we will predict `price` from `carat` using the full data set `diamonds` from the `ggplot2` package.
+
+a.  Display a scatter plot with a linear regression line for the model `price ~ carat`.
+
+```{r}
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point(size = 0.5, alpha = 0.2) +
+  geom_smooth(method = "lm") +
+  theme_minimal()
+```
+
+b. Display and interpret the residual plots.
+
+```{r fig.asp = 1}
+par(mfcol = c(2, 2))
+plot(lm(price ~ carat, diamonds))
+```
+
+c.  Apply transformations ti the data to get rid of the heteroscedasticity. Display a plot to check if the transformations were successful.
+
+```{r}
+ggplot(diamonds, aes(x = log(carat), y = log(price))) +
+  geom_point(size = 0.5, alpha = 0.2) +
+  geom_smooth(method= "lm") +
+  theme_minimal()
+```
+
+d.  Display and interpret the diagnostic plots for this model.
+
+```{r fig.asp = 1}
+par(mfcol = c(2, 2))
+plot(lm(log(price) ~ log(carat), diamonds))
+```
+
+d.  The highest prices are still poorly predicted. Display with a spline for `carat` with a single knot. Choose the position of the knot such that the regression curvefits the data best.
+
+```{r}
+ggplot(diamonds, aes(x = log(carat), y = log(price))) +
+  geom_point(size = 0.5, alpha = 0.2) +
+  geom_smooth(method = "lm", formula = y ~ bs(x, knots = 1.2), col = "red") +
+  theme_minimal()
+```
+
+c.  Display the diagnostic plots of the model with the spline. Are the model assumptions satisfied?
+
+```{r fig.asp = 1}
+par(mfcol = c(2, 2))
+plot(lm(log(price) ~ bs(log(carat), knots = 1.2), diamonds))
+```
+
+------------------------------------------------------------------------
+
+End of practical

@@ -1,0 +1,208 @@
+---
+title: "Lab 1b"
+subtitle: R basics
+author: "Utrecht Summer School: Statistical Programming with R"
+params: 
+   answers: true
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    df_print: paged
+    number_sections: false
+    theme: paper
+    highlight: tango
+    code_folding: hide 
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(eval = params$answers,
+                      message = FALSE, 
+                      warning = FALSE,
+                      comment = NA)
+```
+
+
+
+## Opening RStudio Projects
+
+There are several ways to **open an RStudio Project**:
+
+1. Using File -> Open Project in the File menu
+2. Selecting a project from the list of most recently opened projects by using File -> Recent Projects
+3. Go to the Project folder and double click on the file with the extension .RProject.
+
+Open RStudio and open the RStudio Project you made in the previous lab by choosing one of the three options described above. 
+
+## Exercise 1: Working with packages, functions and help
+
+**Question 1.** Load the package `ggplot2` and write the code to load a package in the code chunk below.
+```{r}
+library(ggplot2)
+```
+
+**Question 2.** The `ggplot` package contains the data set `msleep`. Ask information (help) about this data set. Write your code in the chunk below and run it. What is the data about?
+
+```{r}
+?msleep
+```
+
+**Question 3.** Ask for a summary of the `msleep` data with the function `summary()`. Write the code in the chunk below. Run the code. What information does the `summary` function provide?
+
+```{r}
+summary(msleep)
+
+# The function summary provides descriptive statistics of the variables
+# in a data frame. 
+```
+
+
+## Exercise 2. Function arguments
+
+In the lecture we showed an example of throwing two dice with the function `sample()`. 
+
+**Question 1.** Look up the help file of the `sample` function and check which arguments are needed. 
+
+```{r}
+?sample
+```
+
+**Question 2.** We use the function `sample()` to take a random sample from the numbers 1 to 6 (the number of eyes) and we do this 2 times (two dice). Below is the code that was used in the lecture. Run the code and look at the results. 
+
+To run code, you have two options:
+
+* Click on the green triangle in the code chunk.
+* Highlight the code and hit Control-Enter on a PC or Command-Return on a Mac.
+
+```{r}
+# Use sample() to mimic throwing two dice
+dice <- sample(x=1:6, size=2, replace=TRUE)
+dice # To print the results of the two dice. You could also use print(dice)
+```
+What results did you obtain? This is a random process, which means that if you run the code again, it will very likely give a different result (different values for the eyes). Try it.
+
+
+**Question 3.** Will the function work if we leave out the argument names and give only the input values, as below? Have a look at the required arguments (in the help file). Check the code by running it. 
+
+```{r}
+dice <- sample(1:6, 2, TRUE)
+```
+
+**Question 4.** Will the function work if we change the order of the input values as in this code: ` dice <- sample(2, 1:6, TRUE)` Copy and past the code in the chunk below. Run the code. Why does it not work?
+```{r}
+# type the code here
+
+#The code does not work because the input values do not conform to the order of the arguments.
+```
+
+**Question 5.** How can you make the code in the previous chunk work, without changing the order of the input values?
+```{r}
+# 
+# Changing the order of the input values is possible only when the argument is 
+# mentioned. 
+
+dice <- sample(size=2, x=1:6, replace=TRUE)
+dice
+
+```
+
+**Question 6.** Sometimes we need reproducible results. In question 2 you saw that running the code several times, leads to different answers. When we want the results to be reproducible, we can set a so-called seed for the random number generator of R. 
+
+In R, a random number seed is an initial value (a seed) used to start the random number generation process. It ensures that the sequence of random numbers generated is reproducible, meaning the same set of random numbers can be recreated if the same seed is used. This is useful for debugging, sharing results, and ensuring consistency in simulations and analyses.
+
+You can use `set.seed()` to set the seed. See the code below. Run the code below different times and see if you understand what it does. 
+```{r}
+set.seed(848)
+dice <- sample(size=2, x=1:6, replace=TRUE)
+dice
+
+set.seed(32)
+dice <- sample(size=2, x=1:6, replace=TRUE)
+dice
+```
+
+
+
+## Closing your RStudio Project
+
+When you want to **close your RStudio Project**, there are several options:
+
+1. Quit RStudio using RStudio -> Quit RStudio. This will close the RStudio application but keep the current RStudio Project active. This means that when you open RStudio the next time, it will automatically open with the current RStudio Project. 
+2. Close the RStudio Project using File -> Close Project. This will only close the current RStudio Project, but it will not close the RStudio application.
+
+Close the RStudio Project using the option you prefer.
+
+For more information about RStudio Projects, [see the RStudio Support page.](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects)
+
+
+## Advanced exercises 
+
+## Exercise 1. Function arguments
+
+**Question 1.** Suppose you want to plot the weight of the women on the x-axis and the height of the women on the y-axis. How can you achieve such a plot? 
+
+A. plot(`women$height`, `women$weight`)
+
+B. plot(`women$weight`, `women$height`)
+
+C. plot(`x=women$height`, `y=women$weight`)
+
+D. plot(`y=women$height`, `x=women$weight`)
+
+Tip: use the `args()` function and try the different codes in the code chunk below. (A note on the notation `women$height`: the `$` sign is used to select the variable `height` from the data set `women`. More will be explained in the next lecture and lab).
+
+```{r eval=FALSE}
+args(plot)
+plot(women$height, women$weight)
+plot(women$weight, women$height)
+plot(x=women$height, y=women$weight)
+plot(y=women$height, x=women$weight)
+
+# Answer: the options B and D yield the correct plot.
+```
+
+## Exercise 2. Working with functions
+
+Imagine we have a hat that contains 10 commonly used first names of boys and girls. With the following R code, we can create a vector with 10 names: `hat_names <- c("Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Henry", "Ivy", "Jack")`. 
+
+Run the code below to create the vector `hat_names`.
+
+```{r}
+hat_names <- c("Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Henry", "Ivy", "Jack")
+```
+
+**Question 1.** Write R code to sample 3 names from the hat without replacement. This means that once a name is picked, it cannot be picked again in the same sample. Find out which input you have to give to the function `sample()` to achieve this. Add comments to your code to explain what the code does. 
+
+*How to add comments to your code*: If you want to add comments to your code, use a # before the text. The commented text will turn green. Note that if you need more lines for your text, you will need to use the \# at the beginning of each new line of commented text. 
+
+```{r}
+# Ask for information about the arguments of function sample()
+args(sample)
+
+# Use replace = FALSE to draw names without replacement. Each person can only be chosen once.
+sample(x = hat_names, size = 3, replace = FALSE)
+
+```
+
+**Question 2.** Write R code to sample 8 names from the hat, but now with replacement. 
+
+```{r}
+# Use replace = TRUE to sample with replacement
+sample(x = hat_names, size = 8, replace = TRUE)
+```
+
+
+## Closing your RStudio Project
+
+When you want to **close your RStudio Project**, there are several options:
+
+1. Quit RStudio using RStudio -> Quit RStudio. This will close the RStudio application but keep the current RStudio Project active. This means that when you open RStudio the next time, it will automatically open with the current RStudio Project. 
+2. Close the RStudio Project using File -> Close Project. This will only close the current RStudio Project, but it will not close the RStudio application.
+
+Close the RStudio Project using the option you prefer.
+
+For more information about RStudio Projects, see the RStudio Support page: https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects

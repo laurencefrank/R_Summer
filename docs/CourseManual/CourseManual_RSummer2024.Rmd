@@ -1,0 +1,487 @@
+---
+title: "Statistical Programming with R (S24)"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: scroll
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Sidebar {.sidebar}
+
+------------------------------------------------------------------------
+
+##### **Questions? Contact us:**
+
+[ms.summserschool\@uu.nl](mailto:ms.summerschool@uu.nl)
+
+------------------------------------------------------------------------
+
+##### **Topics**
+
+**Monday**
+
+a.  RStudio and RMarkdown
+b.  R basics
+c.  Data objects
+d.  Operators
+
+**Tuesday**
+
+a.  Data manipulation
+b.  Data visualisation
+
+**Wednesday**
+
+a.  Linear models
+b.  Diagnostics
+
+**Thursday**
+
+a.  Programming
+b.  Resampling
+
+**Friday**
+
+a.  Communicating results
+b.  Presentations
+
+------------------------------------------------------------------------
+
+The materials of this course are
+[CC-BY-NC-4.0](https://creativecommons.org/licenses/by-nc/4.0/)
+licensed.
+
+# Quick overview
+
+## Column
+
+### **Welcome!**
+
+Dear all,
+
+This summer you will participate in the [**USS24: Statistical
+programming with
+R**](https://www.utrechtsummerschool.nl/courses/social-sciences/data-science-statistical-programming-with-r)
+course in Utrecht, the Netherlands.
+
+We look forward to see you all in Utrecht,
+
+*The Statistical Programming with R Team*
+
+-   [Laurence Frank](https://www.uu.nl/staff/lefrank) (course director)
+    <br>
+-   [Maarten Cruyff](https://www.uu.nl/staff/mcruyff)
+-   [Mahdi Shafiee
+    Kamalabad](https://www.uu.nl/staff/MShafieeKamalabad/)
+
+### **Course description**
+
+Students learn to operate `R`, to perform data manipulation and
+visualisation, work with the (generalized) linear models, conduct
+simulation studies (e.g. bootstrap) and present results of data analyses
+in publication ready tables. We will work with the RStudio environment
+and `R Markdown`. The focus will be on the `tidyverse` package.
+
+R is a very popular and powerful platform for data manipulation,
+visualization, and analysis and has a number of advantages over other
+statistical software packages. A wide community of users contribute to
+R, resulting in broad coverage of statistical procedures, including many
+that are not available in any other statistical software.
+
+### **Learning goals**
+
+The course teaches students the skills needed to understand how R works
+and how to use R for a variety of statistical analyses. The following
+skills and learning goals are covered in this course:
+
+-   Being able to work with the R environment (`RStudio`) and the online
+    resources;
+-   Perform reproducible data analyses with `R Markdown` and `RStudio`;
+-   Master data manipulation (cleaning, transformation, re-coding) with
+    `tidyverse`;
+-   Summarizing data in publication-ready tables;
+-   Make high-quality plots with `ggplot`;
+-   Work with pipelines (`tidyverse`);
+-   Fitting and interpreting (generalized) linear models;
+-   Being able to perform a bootstrap;
+-   Communicate the results of statistical analyses in reports,
+    presentations and articles.
+
+## Column
+
+### **Daily Schedule**
+
+| Time          | Activity                                                                              |
+|:--------------------------|:--------------------------------------------|
+| 09.00 - 12:00 | Lectures, computer labs, plenary discussion (coffee/tea break around 10:30)           |
+| 12:00 - 13:00 | [Lunch](https://goo.gl/maps/GuxZQUCvtQixgzVE8)                                        |
+| 13:00 - 16.00 | Lectures, computer labs, plenary discussion (break around 15:30 with sodas and fruit) |
+
+### **Lecture location**
+
+The entire course takes place in the [Viktor J. Koningsberger building,
+Room Pangea](https://goo.gl/maps/ufn6aXVL9K48Gn7S6)
+
+### **Target audience, study load, certificate**
+
+Applied researchers and (master) students who already use statistical
+software and would like to learn to use, or improve their usage of, the
+R environment. Understanding basic statistical theory such as t-tests,
+hypothesis testing, and regression is required. Participants from a
+variety of fields —including sociology, psychology, education, human
+development, marketing, business, biology, medicine, political science,
+and communication sciences— will benefit from this course.
+
+**Study load:** five full time days, 1.5 ECTS <br>
+
+**Certificate:** participants will receive a certificate at the end of
+the course.
+
+------------------------------------------------------------------------
+
+The materials of this course are
+[CC-BY-NC-4.0](https://creativecommons.org/licenses/by-nc/4.0/)
+licensed.
+
+# How to prepare
+
+## Column 1
+
+### **Prepare your laptop before the course starts**
+
+To be able to participate in this course, you have to prepare your
+laptop in the following way:
+
+**System requirements**
+
+Bring a laptop computer to the course and make sure that you have full write 
+access and administrator rights to the machine. Some corporate laptops come with 
+limited access for their users, we therefore advice you to bring a personal 
+laptop computer, if you have one. 
+
+**1. Install the latest version of `R`**
+
+`R` can be downloaded [here](https://cran.r-project.org).
+
+**2. Install the latest version of `RStudio` Desktop**
+
+`Rstudio` can be downloaded [here](https://www.rstudio.com/products/rstudio/download/#download).
+
+*Please note that:*
+
+-   It is important to ***install `R` first*** and then
+    `RStudio Desktop`.
+-   The free and open source `RStudio Desktop` version is sufficient for
+    this course.
+
+**3. Install packages**
+
+Start `RStudio` and install the following packages by copy and paste these 
+exact commands in the console pane:
+
+```{r eval=FALSE, echo = TRUE}
+install.packages(c("tidyverse", "knitr", "rmarkdown", "rmdformats", "prettydoc", 
+                   "rticles", "hrbrthemes", "plotly", "patchwork", "shiny", 
+                   "devtools", "boot", "gtsummary", "papaja", "car", "DAAG", 
+                   "splines", "mice", "broom","janitor", "pacman", "gapminder",
+                   "kableExtra"), dependencies = TRUE)
+```
+
+If you are not sure where to execute code, use the following figure to identify 
+the console:
+
+<center>
+  <img src="figures/RStudioInterface.png" alt="HTML5 Icon" width = 80%>
+</center>
+
+Just copy and paste the code in the console window and press the return key. 
+When asked the question below, type `Yes` in the console and press the return 
+key.
+
+```{r eval = FALSE, echo = TRUE}
+Do you want to install from sources the package which needs 
+compilation? (Yes/no/cancel)
+```
+
+
+## Column 2
+
+### **What if the steps to the left do not work for me?**
+
+If all fails and you have insufficient rights to your machine, the
+following web-based service will offer a solution.
+
+1.  You will receive an account to Utrecht University's
+    [MyWorkPlace](https://myworkplace.uu.nl/). You would have access to
+    `R` and `RStudio` there. You may need to install packages for new
+    sessions during the course.
+2.  Open a free account on [rstudio.cloud](https://rstudio.cloud). You
+    can run your own cloud-based `RStudio` environment there.
+
+
+# Monday
+
+## Column 1
+
+### **Introduction to the R environment and R Markdown**
+
+The topics of today are:
+
+-   Introduction to R and RStudio
+-   Introduction to reproducible data analysis with R Markdown.
+-   Learn to organise your work with RStudio Projects.
+-   How to work with packages and functions.
+-   Resources and getting help.
+-   R objects and data types.
+
+### **Literature and resources**
+
+Introduction to R and RStudio:
+
+-   [Modern Dive, Chapter 1: Getting started with R and data](https://moderndive.com/1-getting-started.html)
+
+Working with RStudio Projects:
+
+* [RStudio Support: Using RStudio Projects](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects)
+* [R Studio Cheat Sheet](https://rstudio.github.io/cheatsheets/rstudio-ide.pdf)
+
+Introduction to R Markdown:
+
+* [Short video: What is Markdown?](https://vimeo.com/178485416)
+* [R Markdown Cheat Sheet](https://posit.co/wp-content/uploads/2022/10/rmarkdown-1.pdf)
+* [R Markdown Course by RStudio: Introduction, How it works, Code Chuncks, Inline code](https://rmarkdown.rstudio.com/lesson-1.html)
+
+Extra resources:
+
+If you are new to R: 
+
+* [Getting used to R, RStudio and RMarkdown](https://rbasics.netlify.app/)
+
+For more advanced R users: 
+
+* [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
+* [R for Data Science, 2nd edition](https://r4ds.hadley.nz/)
+
+
+## Column 2
+
+### **Course material**
+
+
+Morning
+
+* [**Lecture + Lab 1a**](https://surfdrive.surf.nl/files/index.php/s/RkL2nL1HLa9IMWq/download)
+
+* [**Lecture + Lab 1b**](https://surfdrive.surf.nl/files/index.php/s/g2p2UmI9GTdo4w9/download)
+
+
+Afternoon
+
+* [**Lecture + Lab 1c**](https://surfdrive.surf.nl/files/index.php/s/01xHxQTtRCDxSMT/download)
+
+* [**Lecture + Lab 1d**](https://surfdrive.surf.nl/files/index.php/s/Ku2cvh7PNcJYE0a/download)
+
+
+# Tuesday
+
+## Column 1
+
+### **Data manipulation with tidyverse and data visualisation**
+
+**Morning**
+
+-   Data manipulation with `tidyverse`
+    -   dplyr functions
+    -   pipe operator
+    -   re-coding variables 
+    -   missing values
+
+**Afternoon**
+
+-   Data visualization with `ggplot2`
+    -   uni- and bivariate plots
+    -   plots for numeric and categorical data
+    -   plot arrays and faceting
+
+### **Literature and resources**
+
+**Data manipulation with `dplyr`**
+
+* [`dplyr` cheat sheet](https://rstudio.github.io/cheatsheets/data-transformation.pdf)
+* [Introduction to `dplyr`](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html){target="_blank"}
+* [The `tidyverse` style guide, Paragraphs 1.1, 2.1, 2.2, 2.5, 4.1-4.6](https://style.tidyverse.org/){target="_blank"}
+  
+
+**Data visualisation with `ggplot2`**
+
+* [Elegant Graphics for Data Analysis, Introduction](https://ggplot2-book.org/introduction.html)
+* [The `tidyverse` style guide for ggplot2](https://style.tidyverse.org/ggplot2.html)
+
+
+## Column 2
+
+### **Course material**
+
+Morning
+
+* [**Lecture + Lab 2a**](https://surfdrive.surf.nl/files/index.php/s/5KljDvIaK4CmgkH/download)
+
+
+Afternoon
+
+* [**Lecture + Lab 2b**](https://surfdrive.surf.nl/files/index.php/s/lcmDsBtC6jqf6tk/download)
+
+
+# Wednesday
+
+## Column
+
+### **Linear model and diagnostics**
+
+**Morning**
+
+-   Fitting linear models with `lm()`
+    -   Continuous and categorical predictors
+    -   Polynomials and splines
+    -   Interactions
+
+
+**Afternoon**
+
+-   Diagnostics
+    -   Residuals plots
+    -   Linearity, normality, homoscedasticity and outliers
+
+
+### **Literature**
+
+-   *Foundations of Statistics with R*
+
+    -   [10-10.2: Simple Linear
+        Regression](https://bookdown.org/speegled/foundations-of-statistics/SimpleReg.html){target="_blank"}
+    -   [12-12.0.1: Multiple
+        regression](https://bookdown.org/speegled/foundations-of-statistics/multiple-regression.html){target="_blank"}
+
+-   *YaRrr. The Pirate's Guide to R*
+
+    -   [15 - 15.3:
+        Regression](https://bookdown.org/ndphillips/YaRrr/regression.html){target="_blank"}
+
+-   [Understanding Diagnostic Plots for Linear Regression
+    Analysis](https://data.library.virginia.edu/diagnostic-plots/){target="_blank"}
+
+-   *Foundations of Statistics with R*
+
+    -   [10.5 Residual
+        Analysis](https://bookdown.org/speegled/foundations-of-statistics/SimpleReg.html#residual-analysis){target="_blank"}
+    -   [12.0.2 Example Two: Secher
+        data](https://bookdown.org/speegled/foundations-of-statistics/multiple-regression.html#example-two-secher-data){target="_blank"}
+
+## Column 2
+
+### **Course material**
+
+Morning
+
+* [**Lecture + Lab 3a**](https://surfdrive.surf.nl/files/index.php/s/YmYX8dMqLlgtw56/download)
+
+
+Afternoon
+
+* [**Lecture + Lab 3b**](https://surfdrive.surf.nl/files/index.php/s/MpG92K94XgzFDxb/download)
+
+
+# Thursday
+
+## Column
+
+### **Programming and resampling**
+
+**Morning** Mastering the R programming language offers a significant
+advantage by enabling you to write custom functions for tailored
+statistical analyses. This morning you will learn to execute loops and
+design your own functions.
+
+**Afternoon** Being able to write your own functions becomes
+particularly valuable in scenarios where traditional hypothesis testing
+is inadequate due to violated assumptions or the inability to estimate
+statistics using known distributions. In such situations, the bootstrap
+method emerges as a highly versatile and practical tool. Its
+implementation in R is remarkably straightforward, making it an
+accessible and powerful approach to hypothesis testing.
+
+### Literature
+
+Bootstrap and Confidence Intervals:
+
+* [ModernDive: Chapter 8 Bootstrapping and Confidence Intervals](https://moderndive.com/8-confidence-intervals.html)
+
+## Column
+
+### **Lectures and labs**
+
+Morning
+
+* [**Lecture + Lab 4a**](https://surfdrive.surf.nl/files/index.php/s/ojsrEAu8k5ViA8A/download)
+
+Afternoon
+
+* [**Lecture + Lab 4b**](https://surfdrive.surf.nl/files/index.php/s/wRHVur9U5Hh62pA/download)
+
+
+
+# Friday
+
+## Column
+
+### **Data analysis cycle and communication**
+
+Today we will repeat the steps of the data analysis cycle and we will
+focus on the communication of the results of statistical analyses. Work
+in pairs / groups to prepare a presentation of the results (report or
+slides).
+
+
+## Column
+
+### **Course material**
+
+* [**Lecture + Lab 5**](https://surfdrive.surf.nl/files/index.php/s/9uIhwBBZyVWft9q/download)
+
+
+
+# Continue with R (self-study)
+
+## Column 1
+
+### **Shiny apps**
+
+Here are two exercises to learn making Shiny apps.
+
+Make a simple Shiny app:
+
+[Lab part
+1](https://surfdrive.surf.nl/files/index.php/s/6qJYzEuWxDlD4jb/download)
+
+Make a more advanced Shiny app:
+
+[Lab part
+2](https://surfdrive.surf.nl/files/index.php/s/d9Rm2125zff9u4O/download)
+
+Answers Lab part 2:
+
+[server.R](https://surfdrive.surf.nl/files/index.php/s/jd0AdcaMhCnWVGn/download)
+
+[ui.R](https://surfdrive.surf.nl/files/index.php/s/0UzjED3EcuBpfMi/download)
+
+**Resources**:
+
+-   [RStudio: Introduction to Shiny](https://shiny.posit.co/)
+
+-   [Book:"Mastering Shiny" by Hadley
+    Wickham](https://mastering-shiny.org/index.html)
+    
+-   [Lecture on Shiny Apps]( https://solisservices-my.sharepoint.com/:v:/g/personal/h_i_oberman_uu_nl/EfsHvCDcYjBOpsI3IiZj03ABmfCnBKx5yqNyoPTLRhVTMw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D&email=l.e.frank%40uu.nl&e=Hl3Fto)    

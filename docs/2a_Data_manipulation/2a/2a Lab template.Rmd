@@ -1,0 +1,363 @@
+---
+title: "Lab 2a"
+subtitle: "Data manipulation with `tidyverse`"
+author: ''
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    theme: flatly
+    highlight: tango
+---
+
+
+```{r global_opts, include=FALSE}
+knitr::opts_chunk$set(eval = params$answers,
+                      message = FALSE, 
+                      warning = FALSE,
+                      comment = "",
+                      fig.width = 16/2,
+                      fig.height = 9/2)
+```
+
+# Preparation
+
+### Load the `tidyverse` package
+
+Load the `tidyverse` package to be able to use the functions in the `dplyr` and `readr` packages.
+
+```{r}
+
+```
+### Download overview of `dplyr` functions
+
+Download the **`dplyr` cheat sheet**  [here](https://rstudio.github.io/cheatsheets/data-transformation.pdf) 
+
+### Import the data
+
+The Mammals Sleep data set[^msleep] contains the sleep times and weights for a set of mammals and is available in the dagdata repository on github. This data set contains 83 rows (the animals) and 11 variables (the characteristics of the animals). 
+
+Be sure to place the data set (`msleep.csv`) in **the same folder as the R Markdown template you are working on**. Use the function `read_csv` from the `readr` package to import the data and save it as `msleep` (using the assignment `<-` operator).
+
+```{r}
+
+```
+
+### Inspect the data with `view()`
+
+You will see that the data `msleep` is now in the "Data" window in the "Environment" tab. If you click on the blue arrow of the data set, you will see the list of variables in the data. Clicking on the spreadsheet symbol will open a new window where you can have a look at the data. The same can be achieved with the `view()`function. Use this function to have a look at the data
+```{r}
+
+```
+
+Here is the description of the variables in the data set: 
+
+* *name*: common name
+* *genus*: taxonomic rank
+* *vore*: carnivore, omnivore or herbivore
+* *order*: taxonomic rank
+* *conservation*: the conservation status of the mammal
+* *sleep\_total*: total amount of sleep, in hours
+* *sleep\_rem*: rem sleep, in hours
+* *sleep\_cycle*: length of sleep cycle, in hours
+* *awake*: amount of time spent awake, in hours
+* *brainwt*: brain weight in kilograms
+* *bodywt*: body weight in kilograms
+
+
+### Use `dplyr::glimpse()` to inspect the data
+
+Use `dplyr::glimpse()` to inspect the `msleep` data and compare it with `str()` on the same data. What information do you obtain? What are the differences?
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+### Use base R function `summary()` to obtain descriptives
+
+The base R function `summary()` gives descriptive statistics for all the variables in a data frame. It takes into account the data type (class) of each variable. Run the code below. What information do you get about the data? And how does this differ depending on the class (data type) of the variable?
+
+```{r}
+
+```
+
+# Selecting columns with `dplyr::select()`
+
+### Select columns by name and save under a different name
+
+Use `dplyr::select()` to select two variables from `msleep`: the variables `name` and `sleep_total`.
+
+```{r}
+
+```
+
+If you do not want to have the entire data printed, you can use the base R function `head()` to display the first 6 rows of a data frame. You can specify the number of rows you want to see by adding a number between the parentheses e.g. `(5)`. 
+
+Perform the same selection of the variables `name` and `sleep_total` and then show the first 5 rows of the result. Hint: use the pipe `%>%` operator.
+
+```{r}
+
+```
+
+
+### Select columns with operators
+
+To select all the columns *except* a specific column, we can use the `!` operator (this means "not"). 
+
+Write code using `dplyr::select()` with piping (`%>%`) that:
+
+1. excludes the variable `vore`
+2. shows the first 7 rows of the result
+
+```{r}
+
+```
+
+### Select a range of columns
+
+Write code to select the variables `genus` to `sleep-total` and view the first 5 rows of the selected data. To select a range of columns by the variable names, use the ":" operator. 
+
+```{r}
+
+```
+### Select columns based on letters
+
+To select all columns that start with the character string "sl", use the function `starts_with()` in combination with `select()`. Write code to select all variables starting with "sl" and view the first 5 rows of the selected data set.
+
+```{r}
+
+```
+### Select variables (columns) with `where()`
+
+Write code that selects only the numeric variables using `dplyr::select()` and display the first 5 observations of the data set.
+
+```{r}
+
+```
+
+# Select rows with `dplyr::filter()`
+
+### Selecting rows based on a selection rule
+
+The `dplyr::filter()` function allows to filter rows to include only those rows that *match* the criteria of the filter. Write code that filters the rows for mammals that have a total number of hours sleep equal to 18 hours or more. How many mammals meet this criterion?
+
+```{r}
+
+```
+### Filter rows based on 2 selection rules
+
+Write code to filter the rows for mammals that sleep a total of more than 18 hours *and* have a body weight of greater than 1 kilogram. How many mammals match these criteria?
+
+```{r}
+
+```
+### Select rows with the `%in% operator
+
+To filter the rows for mammals in the Artiodactyla and Proboscidea taxonomic order, you can use the `%in%` operator. This logical operator returns `TRUE` for values of a vector that are present *in* a second vector. Run the code and find out how it works. Why do we need to use quotes for the names of the order ("Artiodactyla", "Proboscidea")? How many mammals match the criteria?
+
+```{r}
+
+```
+
+# Arrange rows using `dplyrr::arrange()` and `%>%` 
+
+Use the function `dplyrr::arrange()` to write code that:
+
+1) Selects the variables `name` and `sleep_total`.
+2) Orders the animals by total hours of sleep (highest to lowest).
+3) Shows the first 5 rows of the result.
+
+See `dplyr` cheat sheet how to work with `dplyrr::arrange()`. Now that we need to do more operations on the data, it is best to start with the data name and then start piping for the multiple operations (see also example in the lecture slides).
+
+```{r}
+
+```
+
+## Multiple transformations with `%>%`
+
+Write code to perform the following operations using `dplyr` functions and pipes:
+
+1. Select three columns from `msleep` (the variables "name", "order" and "sleep_total")
+2. Arrange the rows by `order` and by `sleep_total` in descending order.
+3. Filter the rows for mammals that sleep 16 or more hours.
+4. Show the first 5 lines of the resulting transformation.
+
+```{r}
+
+```
+
+### Create new columns using `dplyr::mutate()`
+
+The `dplyr::mutate()` function will add new columns to the data frame. Create a new column called `rem_proportion`, which is calculated as the following ratio: `rem_proportion = sleep_rem / sleep_total`. Show the first 5 rows of the result.
+
+```{r}
+
+```
+
+You can add several new columns using `dplyr::mutate()` (separated by commas). 
+
+Write code to:
+
+1. Create two new variables in `msleep`: 
+   + `rem_proportion = sleep_rem / sleep_total`
+   + `brain_body = brainwt / bodywt`
+2. Save the `msleep` data with these new variables as `sleepdata`.
+3. Verify that `sleepdata` indeed contains the two new variables.
+
+```{r}
+
+```
+
+Check whether there is a relationship between the total amount of sleep (`sleep_total`) mammals need, and the ratio of the brain weight compared to the body weight (`brain_body`). Do mammals with relatively larger brains need more sleep? Make the plot with the following code. What do you conclude from the plot?
+
+```{r }
+
+```
+
+### Pipe operator and model formula
+
+A step further would be to fit a linear regression model, with total hours of sleep as outcome variable (`y = sleep_total`) and the ratio between brain weight and body weight as independent variable (`x = brain_body`). 
+
+In R we fit linear regression models with: `lm(y ~ x, data = data_frame)`.
+
+Look at the code below and see if you understand what it does. Why do we need to use `data = .` as an argument in the `lm()` function?
+
+```{r}
+msleep %>% 
+    dplyr::mutate(rem_proportion = sleep_rem / sleep_total, 
+           brain_body = brainwt / bodywt) %>% 
+    lm(sleep_total ~ brain_body, data = .) %>%
+    summary()
+```
+
+# Create summaries with `dplyr::summarise()`
+
+The `summarise()` function creates summary statistics for a given column in the data frame such as the mean. Write code that calculates the following statistics on the variable `sleep_total` and give the values useful names:
+
+* average
+* minimum
+* maximum
+* total
+
+```{r}
+
+```
+
+# Dealing with missing data 
+
+The variable `sleep_cycle` has missing values. If you use the code below to compute summary statistics for this variable, it will return `NA` (missing value) for the summary statistics. 
+
+```
+msleep %>% 
+    dplyr::summarise(avg_sleep_cycle = mean(sleep_cycle), 
+              min_sleep_cycle = min(sleep_cycle),
+              max_sleep_cycle = max(sleep_cycle),
+              total = n())
+```
+
+Try the code in de chunk below and make necessary adjustments to the code to be able to compute summary statistics. 
+
+```{r}
+
+```
+
+### Grouping data: `dplyr::group_by()`
+
+Split the `msleep` data frame by the type of food the animals eat (the `vore` variable), then ask for the summary statistics average, minimum and maximum, plus the total number of observations in each `vore` category. The result should give a set of summary statistics for each `vore` type.
+
+```{r}
+
+```
+
+### Save the `msleep` data as .Rdata
+
+If you want to save your data, you can use the `R` native format of an `.Rdata` file. Use the following code to save the `msleep` data to your current project directory. Verify where the data have been saved.
+
+```{r}
+save(msleep, file="msleep.RData")
+```
+
+
+## Close the project
+
+Close the RStudio Project using the option you prefer.
+
+Here are the 2 options:
+
+1. Quit RStudio using RStudio -> Quit RStudio. This will close the RStudio application but keep the current RStudio Project active. This means that when you open RStudio the next time, it will automatically open with the current RStudio Project. 
+2. Close the RStudio Project using File -> Close Project. This will only close the current RStudio Project, but it will not close the RStudio application.
+
+
+# Advanced exercises
+
+### Create new variables based on conditions with `dplyr::mutate()`
+
+Create a new variable `sleep_length` with two levels: "long" when the animals sleeps equal to or more than 10 hours (variable `sleep_total`) and "normal" when the animals sleep less than 10 hours in total. Save the new data set with this extra variable under a new name. Ensure that the new variable is a factor with two levels. Verify the results with the `summary()` function for the new variable `sleep_length`. Hint: use the `dplyr` function `mutate()` in combination with `if_else`.
+
+```{r}
+
+```
+
+## Use `case_when` to recode variables
+
+Now create another variable `sleep_cat` based on `sleep_total` and this time using three categories: animals that sleep 6 hours or less are "short", animals that sleep between 6 and 10 hours are "normal", and animals that sleep more than 10 hours are "long". Create a new data set with this new variable included as a factor. Use the function `case_when()` and save the data set with the new variable under a new name. 
+
+```{r}
+
+```
+
+### Change the levels of a categorical variable with `dplyr` and `case_when`                       
+Create a new variable `vore_cat` that combines the two categories "carni" and "insecti" in the original variable `vore`. Save the new data set under a new name and ensure that the new variable `vore-cat` is converted to a factor variable.
+
+```{r}
+
+```
+
+### Exclude a few animals from the data set with base R code and with `dplyr`
+
+Exclude the following animals from the `msleep` (variable 'name'): Echidna, Lesser short-tailed shrew and Musk shrew. Save the data set as `msleep2`. Tip: use the square brackets to indicate [rows, columns] or use the function `filter()` from `dplyr`. 
+
+```{r}
+# The first approach uses the names
+
+```
+
+```{r}
+
+# The second approach uses the row numbers directly (you would need to inquire about, or calculate the row numbers)
+
+
+
+```
+
+
+```{r}
+# Using dplyr and filter()
+
+
+
+```
+
+
+### Close the project
+
+Close the RStudio Project using the option you prefer.
+
+Here are the 2 options:
+
+1. Quit RStudio using RStudio -> Quit RStudio. This will close the RStudio application but keep the current RStudio Project active. This means that when you open RStudio the next time, it will automatically open with the current RStudio Project. 
+2. Close the RStudio Project using File -> Close Project. This will only close the current RStudio Project, but it will not close the RStudio application.
+
+[^labcredits]: The exercises in this lab are inspired by the exercises made by Stephen Turner, see [here](https://seandavi.github.io/ITR/dplyr_intro_msleep.html#%E2%80%9CPiping%E2%80%9D%E2%80%9D_with_%%).
+
+[^msleep]: A quantitative, theoretical framework for understanding mammalian sleep. Van M. Savage, Geoffrey B. West. Proceedings of the National Academy of Sciences Jan 2007, 104 (3) 1051-1056; DOI: [10.1073/pnas.0610080104](https://doi.org/10.1073/pnas.0610080104)
+
+

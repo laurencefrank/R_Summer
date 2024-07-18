@@ -1,0 +1,152 @@
+---
+title: "Lab 2b"
+subtitle: "Data Visualization"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    df_print: paged
+    number_sections: false
+    theme: paper
+    highlight: tango
+---
+
+
+---
+
+For this practical, you will need to load the packages `ggplot2`,
+`dplyr`, and `patchwork`. If displaying multiple plot in one figure, use
+the R chunk options `fig.width` (default = 7), `fig.height` (default =
+5) and/or `fig.asp` (height:width ratio) to display the plots in a nice
+format. To avoid messages by `ggplot()` being printed to the html, set
+the global chunk option to `message = FALSE`
+
+```{r message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+For a quick reference of `ggplot2` functions, consult
+
+-   [ggplot2
+    Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf)
+
+-   [ggplot2
+    Reference](https://ggplot2.tidyverse.org/reference/index.html)
+
+------------------------------------------------------------------------
+
+# The diamonds data
+
+The dataset for this practical is the `diamonds` dataset from the
+package `ggplot2`.
+
+a.  Check the help page of this `tibble` for its content, and display
+    the first 10 rows of the data in your HTML.
+
+```{r}
+
+```
+
+The `diamonds` data set has more than 50.000 rows, which is a lot. To
+simplify matters, we will work with a random sample of 500 cases.
+
+b.  Set the seed to 100, and randomly sample 500 cases from the dataset
+    `diamonds` using the `slice_sample()` function. Save the resulting
+    data set as `my_diamonds`.
+
+```{r}
+
+```
+
+# One variable
+
+In the following exercises we display plots numeric and of
+categorical/discrete variables. Check the `geoms` overview in the
+lecture sheets for the different options.
+
+a.  In a 1 x 3 plot array, plot the distribution of variable `carat`
+    using the three different geoms. Add a title with the name of the
+    appropriate geom to each plot. The chunk option `fig.asp = .35`
+    displays the plots in a nice format.
+
+```{r fig.asp = 0.35}
+
+```
+
+Discrete variables are variables with countable values (i.e. categorical
+variables or variables with a small number of integer values). The most
+common option for such variables is the bar plot
+
+a.  Display the bar plots of the factors `cut`, `color` and `clarity` in
+    a 1 x 3 plot array. Make sure that the labels of the categories are
+    readable (i.e., not overlapping).
+
+```{r}
+
+```
+
+# Two variables
+
+The combinations between numeric and categorical/discrete variables
+requires different geoms. Check the cheat sheet again for the appropriate
+options.
+
+a.  In the first row of one figure, display a box and violin plot of the
+    variables `price` and `cut`, an in the second row a density plot.
+    Use the `/` symbol to start a new row.
+
+```{r}
+
+```
+
+The variables `color` and `clarity` are both categorical variables, and
+their distribution is generally displayed by bar plots.
+
+b.  Display a stacked, a dodged, and a filled bar plot of these
+    variables in a 1 x 3 plot array. Use the `plot_layout()` function to
+    display the legend and axes labels only once.
+
+```{r}
+
+```
+
+c.  Now display the joint distribution of these two variables with
+    `geom_count()`.
+
+```{r}
+
+```
+
+The joint distribution of two continuous variables is best depicted with
+a scatter plot.
+
+d.  Display two scatter plots of `price` and `carat` in a 1 x 2 plot
+    array, once with different sizes for `price`, and once with
+    different shapes for `cut`. Make the points transparent by setting
+    `alpha` to an appropriate value.
+
+```{r}
+
+```
+
+e. The plot with different colors for `cut` is not very clear.
+Reproduce the plot by adding a `facet_wrap()` layer, and add `price` for
+the size of the points.
+
+```{r}
+
+```
+
+f. Display the previous plot with a different theme (choose one that you think looks nice).
+
+```{r}
+
+```
+
+---
+
+End of lab

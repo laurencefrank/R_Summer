@@ -1,0 +1,94 @@
+---
+title: "Lab 3b"
+subtitle: "Diagnostics"
+data: "`r Sys.date()`"
+author: ""
+output: 
+  prettydoc::html_pretty:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    theme: tactile
+---
+
+For this practical you need the packages `dplyr`, `ggplot2`, `patchwork` and, for the advanced exercise, the package `splines`.
+
+The data in this practical violate the assumptions of the linear model in various ways. It is your job to transform the data and/or extend the models in such a way that the assumptions are fulfilled.
+
+------------------------------------------------------------------------
+
+# Animals
+
+In this exercise you will work with the `Animals` data from the package `MASS`. The data set includes the variables with measurements of the brain and body weight of various animals.
+
+a.  Load the data in workspace with the function `data()`.
+
+b.  Display the row names to get an idea of what kinds of animals are in the data.
+
+## Linear model
+
+We want to predict brain weight from body weight. We start with visualizing the data.
+
+a.  Display the boxplots showing the distributions of `brain` and `body` in a 1 x 2 array.
+
+b.  Display a scatter plot for the model `brain ~ body` with a linear regression line. Interpret the plot.
+
+c.  Fit the linear model, display its summary, and interpret the parameter estimates and the R-squared.
+
+d.  Display the diagnostic residual plots for the previous model, and interpret the results.
+
+## Data transformations
+
+Since the variables `brain` and `body` are substantially skewed, a data transformation may improve the fit of the model.
+
+a.  Apply transformations to normalize the distributions of the variables `body` and `brain`, and check the result with boxplots.
+
+b.  Display a scatter plot of the transformed versions of `brain` and `body`, and add a linear regression line.
+
+c.  Fit the linear model `m1` with the transformed `body` predicting the transformed `brain`; display its summary, and interpret the parameter estimates and the R-squared.
+
+d.  Display the diagnostic plots for `m1` and interpret. Are the model assumptions fulfilled?
+
+## Adding a predictor
+
+Additional predictors can help to satisfy the assumptions. For the data at hand, the residuals plots show three outliers that have one thing at common; they are prehistoric species. Let's see what happens if we add a predictor to the model that distinguishes between extinct and other species.
+
+a.  Make the factor `species` with levels "extinct" for the prehistoric animals and "other" for the others, and add this factor to the data frame `Animals`.
+
+b.  Fit the model `m2` by adding the predictor `species` to model `m1`, display its summary, and interpret the parameter estimates and the R-squared.
+
+c.  Display and interpret the diagnostic plots for `m2`.
+
+The diagnostic plots show outliers that have a higher (logarithm of) `brain` than predicted by the model. These outliers belong to the class of species know as primates. This result suggests that the predictor `species` could be extended with the category `primates`.
+
+d.  Add the level "primate" to the variable `species` (check which of the animals are primates).
+
+e.  Fit the model `m3` with the modified predictor `species`, display its summary, and interpret the parameter estimates and the R-squared.
+
+f.  Display and interpret the diagnostic plots for `m3`. What do the residual plots say about the brain weight of the Gorilla?
+
+g.  Test the fit of the models `m1` to `m3` with the `anova()` function.
+
+h.  Finally, check for multicollinearity in `m3`.
+
+------------------------------------------------------------------------
+
+# Advanced
+
+In this exercise we will predict `price` from `carat` using the full data set `diamonds` from the `ggplot2` package.
+
+a.  Display a scatter plot with a linear regression line for the model `price ~ carat`.
+
+b.  Display and interpret the residual plots.
+
+c.  Apply transformations ti the data to get rid of the heteroscedasticity. Display a plot to check if the transformations were successful.
+
+d.  Display and interpret the diagnostic plots for this model.
+
+e.  The highest prices are still poorly predicted. Display with a spline for `carat` with a single knot. Choose the position of the knot such that the regression curvefits the data best.
+
+f.  Display the diagnostic plots of the model with the spline. Are the model assumptions satisfied?
+
+------------------------------------------------------------------------
+
+End of practical

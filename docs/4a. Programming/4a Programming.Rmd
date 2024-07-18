@@ -1,0 +1,264 @@
+---
+title: "Lab 4b: Programming"
+subtitle: "Statistical Programming with R"
+author: 'Utrecht Summer School'
+output: 
+  ioslides_presentation:
+    smaller: true
+    css: custom.css
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment="")
+library(tidyverse)
+set.seed(123)
+```
+
+## Content
+
+1.  Looping
+
+2.  Writing your own function
+
+# Looping
+
+## Loops
+
+Iterates a set of commands multiple times
+
+Loops are used for:
+
+-   simulation studies
+
+-   bootstrapping
+
+-   maximization of non-linear functions
+
+-   and solving many other problems
+
+<br>
+
+Loops save you a lot of typing and prevents making errors
+
+## The `for` loop
+
+The code
+
+```{r eval = F}
+for (counter in sequence) {
+  
+  expressions  # all axpression with curly brackets are executed
+  
+}
+```
+
+-   `counter` variable that subsequently takes the values in the `sequence`
+
+-   `sequence` sequence of value that are used in the `expressions`
+
+-   `expressions` are executed as many times as the length of the `sequence`
+
+## Example
+
+Compute the exponents of the numbers 1 to 10
+
+-   in the 1st loop `i = 1`, in the 2nd `i = 2`, etc.
+-   the loop stops after `1 = 10`
+
+```{r}
+for (i in 1:10) {
+  print(exp(i))
+}
+```
+
+## Container objects
+
+Object to store the results of each iteration in the loop
+
+-   has to be initialized before the loop starts
+-   matrices and lists are best suited for this
+
+```{r}
+out <- matrix(nrow = 10, ncol = 2, dimnames = list(1:10, c("x", "exp(x)")))    
+for (i in 1:10) {
+ out[i, ] <- exp(i)
+}
+out
+```
+
+## Plot example
+
+Display `mpg` on y-axis and all other variables on the x-axis (`fig.asp=.35`)
+
+```{r fig.asp=.35}
+par(mfrow = c(2, 5), mar = c(4, 4, 1, 2))
+for (i in 2:11) {
+  plot(x = mtcars[, i], y = mtcars[, 1])
+}
+```
+
+## Adding the variable names
+
+```{r fig.asp=.35}
+vars <- colnames(mtcars)
+par(mfrow = c(2, 5), mar = c(4, 4, 1, 2))
+for (i in 2:11) {
+  plot(x = mtcars[, i], y = mtcars[, 1], xlab = vars[i], ylab = vars[1])
+}
+```
+
+## Other loop functions
+
+R functions that perform loops over rows/columns of matrices/data frames
+
+```{r eval= F}
+apply(X, MARGIN, FUN) 
+
+sapply(X, FUN)
+```
+
+-   `X` is name data frame / matrix
+
+-   `MARGIN` 1 = rows, 2 = columns
+
+-   `FUN` summary function that returns a statistic (e.g. `max`, `mean`, `var`, etc.)
+
+<br>
+
+For some applications easier to use than a loop
+
+## Examples
+
+Get the maximum value of each of the variable in `mtcars`
+
+```{r}
+sapply(mtcars, max)
+```
+
+Get the `mean` in the rows of `mtcars` (silly example)
+
+```{r}
+apply(mtcars, 1, mean)
+```
+
+## `sapply` with function arguments
+
+To return the 2.5% and 97.5% percentiles of the variables in `mtcars`
+
+The function quantile returns percentile of vector `x` , e.g.
+
+```{r eval = F}
+quantile(x, prob = c(.025, .975))
+```
+
+Used in `sapply`
+
+```{r}
+sapply(mtcars, quantile, prob = c(.025, .975))
+```
+
+# Writing functions
+
+## Write your own function
+
+The function is `function()`
+
+```{r eval=F}
+my_function <- function(arguments) {
+  
+  expressions       
+  
+  return(output)   
+                  
+}
+```
+
+-   `arguments` are input of the function
+
+-   `expressions` are operations performed on the arguments
+
+-   `output` an object containing the output (e.g. vector, matrix, list, etc.)
+
+-   `return` optional, the object `output` is sufficient
+
+## Tossing a die
+
+A function without arguments that simulates tossing a die
+
+```{r}
+die <- function() {
+  
+  eyes <- sample(1:6, size = 1)
+  
+  return(eyes)
+}
+```
+
+```{r}
+c(die(), die(), die())
+```
+
+## Defining an argument
+
+The argument `n` specifies the number of dice to toss
+
+```{r}
+dice <- function(n) {
+  
+  return(sample(1:6, size = n, replace = TRUE))
+}
+
+dice(10)
+```
+
+## Multiple returns
+
+A function `dice(n)` returning a list with
+
+-   the outcomes of the `n` throws, their frequencies and their mean
+
+```{r}
+dice <- function(n) {
+  
+  eyes <- sample(1:6, size = n, replace = TRUE) 
+  
+  return(list(outcomes = eyes,
+              freqs    = table(eyes),
+              mean     = mean(eyes)))
+}
+dice(10)
+```
+
+## Default arguments
+
+The default is a fair die (each outcome has probability 1/6)
+
+-   the user can change this if so desired
+
+```{r}
+dice <- function(n, p = rep(1/6, 6)) {
+  
+  eyes <- sample(1:6, size = n, replace = TRUE, prob = p)
+  
+  return(list(outcomes  = eyes,
+              frequency = table(eyes),
+              mean      = mean(eyes)))
+}
+dice(100)
+```
+
+## Unfair dice
+
+The following command throws 100 unfair dice
+
+-   probabilities 1, 2, 3, 4, 5 is 0.1
+-   probability of 6 is 0.5
+
+```{r}
+dice(100,  c(rep(.1, 5), .5))
+```
+
+# Lab 4a
